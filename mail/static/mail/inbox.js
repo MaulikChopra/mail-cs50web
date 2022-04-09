@@ -1,3 +1,7 @@
+import {
+  convert_from_django_to_JS_datetime,
+  formatAMPM,
+} from "./convert_time.js";
 document.addEventListener("DOMContentLoaded", function () {
   const inbox = "inbox";
   const sent = "sent";
@@ -27,7 +31,6 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector("#emails-view").style.display = "none";
     document.querySelector("#compose-view").style.display = "block";
     document.querySelector("#particular-email-view").style.display = "none";
-
     // Clear out composition fields
     document.querySelector("#compose-recipients").value = recipients_val;
     document.querySelector("#compose-subject").value = subject_val;
@@ -39,14 +42,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function send_email() {
       console.log("sending email");
-      let body = JSON.stringify({
+      let email_body = JSON.stringify({
         recipients: document.querySelector("#compose-recipients").value,
         subject: document.querySelector("#compose-subject").value,
-        body: document.querySelector("#compose-body"),
+        body: document.querySelector("#compose-body").value,
       });
       fetch("/emails", {
         method: "POST",
-        body: body,
+        body: email_body,
       }).then(function (response) {
         console.log(response.status);
         if (response.status === 201) {
@@ -92,6 +95,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((emails) => {
         emails.forEach((email) => {
           console.log(email);
+          let datetime = convert_from_django_to_JS_datetime(email.timestamp);
           const mail_element = document.createElement("div");
           mail_element.classList.add("mailfield-all");
           if (email.read) {
@@ -111,7 +115,7 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
             <div style="font-size:0.75rem; color: grey; margin-left:auto">
             <i class="fa-solid fa-clock"></i>
-              ${email.timestamp}
+              ${datetime.toDateString()}, ${formatAMPM(datetime)}
           </div>`;
 
           mail_element.addEventListener("click", function () {
@@ -135,17 +139,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function display_email(email) {
       // main email view page
+      let datetime = convert_from_django_to_JS_datetime(email.timestamp);
+
       let elem = document.querySelector("#particular-email-view");
       elem.innerHTML = `
-      <h6><b style="font-weight: 700";>From: </b>
-      ${email.sender}</h6>
-      <h6><b style="font-weight: 700";>To: </b>
-      ${email.recipients}</h6>
-      <h5><b style="font-weight: 700";>Subject</b>
-      <i class="fa-solid fa-angles-right"></i> ${email.subject}</h5>
-      <h6><em style="color:grey">
-      <i class="fa-solid fa-clock"></i>
-      ${email.timestamp}</em></h6>
+      <h6><b style="font-weight: 700";>
+      From: </b>${email.sender}</h6>
+      <h6><b style="font-weight: 700";>
+      To: </b>${email.recipients}</h6>
+      <h5><b style="font-weight: 700";>
+      Subject</b><i class="fa-solid fa-angles-right"></i> 
+      ${email.subject}</h5>
+      <h6><em style="color:grey"><i class="fa-solid fa-clock"></i>
+      ${datetime.toDateString()}, ${formatAMPM(datetime)}
+      </em></h6>
       <hr>
       <p>${email.body.replace(/\n/g, "<br />")}</p>
       <hr>
@@ -241,19 +248,6 @@ document.addEventListener("DOMContentLoaded", function () {
         (body_val = body),
         (recipients_val = recipients)
       );
-    }
-
-    function catch_error(response, type) {
-      if (response.status !== 204) {
-        document.querySelector("#particular-email-view").innerHTML += `
-      <div class="alert alert-danger" role="alert">
-        Some error occured in saving "${type}"
-      </div>
-      `;
-        setTimeout(() => {
-          window.location.replace("/");
-        }, 2000);
-      }
     }
   }
 });

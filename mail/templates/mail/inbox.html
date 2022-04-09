@@ -43,7 +43,7 @@
     </div>
     <div class="form-group">
       <b style="font-weight: 600">To: </b
-      ><input id="compose-recipients " class="mailfield-all no-hover" />
+      ><input id="compose-recipients" class="mailfield-all no-hover" />
     </div>
     <div class="form-group">
       <input
@@ -64,5 +64,7 @@
 {% endblock %} 
 
 {% block script %}
-<script src="{% static 'mail/inbox.js' %}"></script>
+<script type="module" src="{% static 'mail/inbox.js' %}"></script>
+<script type="module" src="{% static 'mail/convert_time.js' %}"></script>
+
 {% endblock %}
