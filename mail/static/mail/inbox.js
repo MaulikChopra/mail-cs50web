@@ -241,19 +241,21 @@ document.addEventListener("DOMContentLoaded", function () {
         subject = "Re: " + email.subject;
       }
 
+      // to show time in the respecitve timezone using JS Date module.
+      let datetime = convert_from_django_to_JS_datetime(email.timestamp);
+      let time_in_ampm = formatAMPM(datetime);
       let body =
+        "\n" +
         "On " +
-        email.timestamp +
+        datetime.toDateString() +
+        ", " +
+        time_in_ampm +
         ", " +
         email.sender +
         " wrote:\n" +
-        email.body +
-        "\n";
-      compose_email(
-        (subject_val = subject),
-        (body_val = body),
-        (recipients_val = recipients)
-      );
+        email.body;
+      console.log(subject, body, recipients);
+      compose_email(subject, body, recipients);
     }
   }
 });
