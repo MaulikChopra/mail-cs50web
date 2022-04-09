@@ -109,12 +109,12 @@ document.addEventListener("DOMContentLoaded", function () {
             mail_element.setAttribute("style", "font-weight: 700; !important");
           }
           mail_element.innerHTML = `
-            <div style="margin-right: 3rem">
+            <div style="margin-right: 1.5rem">
             <i class="fa-solid fa-user"></i>
               ${email.sender} 
             </div>
-            <div>
-            <i class="fa-solid fa-angles-right"></i>
+            <div style="padding-right: 0.5rem">
+            <i class="fa-solid fa-angles-right" ></i>
               ${email.subject} 
             </div>
             <div style="font-size:0.75rem; color: grey; margin-left:auto">
