@@ -46,6 +46,8 @@ function compose_email() {
       console.log(response.status);
       if (response.status === 201) {
         console.log("success sent email");
+        // redirect to main page
+        // and show success on main page like google mail itself
         document.querySelector("#message-box").innerHTML = `
       <div class="alert alert-success" role="alert">
         Email sent successfully!
@@ -54,9 +56,6 @@ function compose_email() {
         setTimeout(() => {
           window.location.replace("/");
         }, 1000);
-
-        // redirect to main page
-        // and show success on main page like google mail itself
       } else {
         response.json().then(function (result) {
           // add html for error and clear fields
