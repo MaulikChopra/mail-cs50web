@@ -6,9 +6,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const inbox = "inbox";
   const sent = "sent";
   const archive = "archive";
-
   const grey_color = "#EFEFEF";
 
+  // defining onclicks for the header buttons
   document
     .querySelector("#inbox")
     .addEventListener("click", () => load_mailbox(inbox));
@@ -47,6 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
         subject: document.querySelector("#compose-subject").value,
         body: document.querySelector("#compose-body").value,
       });
+      // post request to send the mail
       fetch("/emails", {
         method: "POST",
         body: email_body,
@@ -54,8 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log(response.status);
         if (response.status === 201) {
           console.log("success sent email");
-          // redirect to main page
-          // and show success on main page like google mail itself
+          // redirect to main page and show success message for 1 second.
           document.querySelector("#message-box").innerHTML = `
       <div class="alert alert-success" role="alert">
         Email sent successfully!
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
           }, 1000);
         } else {
           response.json().then(function (result) {
-            // add html for error and clear fields
+            // add html for error and do not clear fields
             document.querySelector("#message-box").innerHTML = `
           <div class="alert alert-danger" role="alert">
             ${result["error"]}
@@ -95,16 +95,19 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((emails) => {
         emails.forEach((email) => {
           console.log(email);
+          // to show time in the respecitve timezone using JS Date module.
           let datetime = convert_from_django_to_JS_datetime(email.timestamp);
+
+          // selecting the main element to push html
           const mail_element = document.createElement("div");
-          mail_element.classList.add("mailfield-all");
+          mail_element.classList.add("mailfield-all"); // added class to mail elements
+          // checking if the email was read or not, then change the color of element.
           if (email.read) {
             mail_element.style.backgroundColor = grey_color; // grey
           } else {
             mail_element.setAttribute("style", "font-weight: 700; !important");
           }
           mail_element.innerHTML = `
-
             <div style="margin-right: 3rem">
             <i class="fa-solid fa-user"></i>
               ${email.sender} 
@@ -116,11 +119,12 @@ document.addEventListener("DOMContentLoaded", function () {
             <div style="font-size:0.75rem; color: grey; margin-left:auto">
             <i class="fa-solid fa-clock"></i>
               ${datetime.toDateString()}, ${formatAMPM(datetime)}
-          </div>`;
+          </div>`; // html code ended
 
           mail_element.addEventListener("click", function () {
             load_email(email.id, mailbox);
-          });
+          }); // event listener of button click
+          // adding the html element to the view
           document.querySelector("#emails-view").append(mail_element);
         });
       });
@@ -139,8 +143,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function display_email(email) {
       // main email view page
+      // to show time in the respecitve timezone using JS Date module.
       let datetime = convert_from_django_to_JS_datetime(email.timestamp);
 
+      // selecting the main div to push html into
       let elem = document.querySelector("#particular-email-view");
       elem.innerHTML = `
       <h6><b style="font-weight: 700";>
@@ -156,9 +162,9 @@ document.addEventListener("DOMContentLoaded", function () {
       <hr>
       <p>${email.body.replace(/\n/g, "<br />")}</p>
       <hr>
-      `;
+      `; //html content end
 
-      // button holder
+      // button holder to add all the buttons
       const button_holder = document.createElement("div");
       button_holder.classList.add("button-holder");
       // archive button
@@ -180,18 +186,16 @@ document.addEventListener("DOMContentLoaded", function () {
       // reply button
       const reply_button = document.createElement("div");
       reply_button.innerHTML = `<button class="btn btn-sm btn-outline-primary" id="reply_button"><i class="fa-solid fa-reply icon"></i>Reply</button>`;
-      // reply_button.addEventListener("click", function () {
-      //   reply_email(email);
-      // });
       reply_button.onclick = function () {
         reply_email(email);
         console.log("reply clicked");
       };
       button_holder.append(reply_button);
 
+      // adding the button holder to the main html of our page
       elem.append(button_holder);
 
-      // mark as read
+      // mark as read // only sends a PUT request if mail not seen otherwise skips.
       if (!email.read) {
         fetch("/emails/" + email.id, {
           method: "PUT",
@@ -201,6 +205,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       }
     }
+    // function to archive or unarchive the mail
     function PUT_archive(id, archived) {
       if (archived) {
         fetch("/emails/" + id, {
@@ -223,6 +228,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
 
+    // function to reply to the mail
     function reply_email(email) {
       let recipients = email.sender;
       let subject;
