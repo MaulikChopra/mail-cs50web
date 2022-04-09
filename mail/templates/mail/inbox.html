@@ -5,36 +5,60 @@
 
 <h2>{{ request.user.email }}</h2>
 
-<button class="btn btn-sm btn-outline-primary" id="inbox">Inbox</button>
-<button class="btn btn-sm btn-outline-primary" id="compose">Compose</button>
-<button class="btn btn-sm btn-outline-primary" id="sent">Sent</button>
-<button class="btn btn-sm btn-outline-primary" id="archived">Archived</button>
-<a class="btn btn-sm btn-outline-primary" href="{% url 'logout' %}">Log Out</a>
+<button class="btn btn-sm btn-outline-primary" id="inbox">
+  <i class="fa-solid fa-inbox icon"></i>Inbox
+</button>
+<button class="btn btn-sm btn-outline-primary" id="compose">
+  <i class="fa-solid fa-pen-to-square icon"></i>Compose
+</button>
+<button class="btn btn-sm btn-outline-primary" id="sent">
+  <i class="fa-solid fa-envelope-circle-check icon"></i>Sent
+</button>
+<button class="btn btn-sm btn-outline-primary" id="archived">
+  <i class="fa-solid fa-box-archive icon"></i>Archived
+</button>
+<a class="btn btn-sm btn-outline-primary" href="{% url 'logout' %}"
+  ><i class="fa-solid fa-right-from-bracket icon"></i>Log Out</a
+>
+<button class="btn btn-sm btn-outline-primary" style="float: right" id="home">
+  <i class="fa-solid fa-house-user icon"></i>Home
+</button>
 <hr />
 
 <div id="emails-view"></div>
+
+<div id="particular-email-view"></div>
 
 <div id="compose-view">
   <h3>New Email</h3>
   <div id="message-box"></div>
   <form id="compose-form">
     <div class="form-group">
-      From:
-      <input disabled class="form-control" value="{{ request.user.email }}" />
+      <b style="font-weight: 600">From: </b>
+      <input
+        disabled
+        class="mailfield-all no-hover"
+        value="{{ request.user.email }}"
+      />
     </div>
     <div class="form-group">
-      To: <input id="compose-recipients" class="form-control" />
+      <b style="font-weight: 600">To: </b
+      ><input id="compose-recipients " class="mailfield-all no-hover" />
     </div>
     <div class="form-group">
-      <input class="form-control" id="compose-subject" placeholder="Subject" />
+      <input
+        class="mailfield-all no-hover"
+        id="compose-subject"
+        placeholder="Subject"
+      />
     </div>
     <textarea
-      class="form-control"
+      class="mailfield-all no-hover"
       id="compose-body"
       placeholder="Body"
     ></textarea>
   </form>
-  <button id="compose-submit" class="btn btn-primary">Submit</button>
+  <button id="compose-submit" class="btn btn-outline-primary">Submit</button>
 </div>
 <!--prettier-ignore-->
 {% endblock %} 
