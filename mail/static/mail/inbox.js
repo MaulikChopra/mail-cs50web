@@ -19,9 +19,10 @@ document.addEventListener("DOMContentLoaded", function () {
     .querySelector("#archived")
     .addEventListener("click", () => load_mailbox(archive));
   document.querySelector("#compose").addEventListener("click", compose_email);
-  document.querySelector("#home").addEventListener("click", () => {
-    window.location.replace("/");
-  });
+
+  document
+    .querySelector("#home")
+    .addEventListener("click", () => load_mailbox(inbox));
 
   // By default, load the inbox
   load_mailbox(inbox);
@@ -41,7 +42,6 @@ document.addEventListener("DOMContentLoaded", function () {
       .addEventListener("click", send_email);
 
     function send_email() {
-      console.log("sending email");
       let email_body = JSON.stringify({
         recipients: document.querySelector("#compose-recipients").value,
         subject: document.querySelector("#compose-subject").value,
@@ -52,18 +52,9 @@ document.addEventListener("DOMContentLoaded", function () {
         method: "POST",
         body: email_body,
       }).then(function (response) {
-        console.log(response.status);
         if (response.status === 201) {
-          console.log("success sent email");
-          // redirect to main page and show success message for 1 second.
-          document.querySelector("#message-box").innerHTML = `
-      <div class="alert alert-success" role="alert">
-        Email sent successfully!
-      </div>
-      `;
-          setTimeout(() => {
-            window.location.replace("/");
-          }, 1000);
+          // redirect to main page and show success message for 5 second.
+          load_mailbox(inbox, true);
         } else {
           response.json().then(function (result) {
             // add html for error and do not clear fields
@@ -78,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  function load_mailbox(mailbox) {
+  function load_mailbox(mailbox, email_success = false) {
     // Show the mailbox and hide other views
     document.querySelector("#emails-view").style.display = "block";
     document.querySelector("#compose-view").style.display = "none";
@@ -89,12 +80,22 @@ document.addEventListener("DOMContentLoaded", function () {
       mailbox.charAt(0).toUpperCase() + mailbox.slice(1)
     }</h3>`;
 
+    // if coming from compose with successful email show message for 5 seconds
+    if (email_success) {
+      let success_message = document.createElement("div");
+      success_message.innerHTML = ` <div class="alert alert-success" role="alert">
+      Email sent successfully!</div>`;
+      document.querySelector("#emails-view").append(success_message);
+      setTimeout(() => {
+        success_message.style.display = "none";
+      }, 5000);
+    }
+
     // FETCH DATA FORM OUR OWN SERVER USING THE PREDEFINED API
     fetch("/emails/" + mailbox)
       .then((response) => response.json())
       .then((emails) => {
         emails.forEach((email) => {
-          console.log(email);
           // to show time in the respecitve timezone using JS Date module.
           let datetime = convert_from_django_to_JS_datetime(email.timestamp);
 
@@ -134,8 +135,6 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector("#emails-view").style.display = "none";
     document.querySelector("#compose-view").style.display = "none";
     document.querySelector("#particular-email-view").style.display = "block";
-
-    console.log(id);
 
     fetch("/emails/" + id)
       .then((response) => response.json())
@@ -178,7 +177,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         archive_button.addEventListener("click", function () {
           PUT_archive(email.id, email.archived);
-          console.log("archive clicked");
         });
         button_holder.append(archive_button);
       }
@@ -188,7 +186,6 @@ document.addEventListener("DOMContentLoaded", function () {
       reply_button.innerHTML = `<button class="btn btn-sm btn-outline-primary" id="reply_button"><i class="fa-solid fa-reply icon"></i>Reply</button>`;
       reply_button.onclick = function () {
         reply_email(email);
-        console.log("reply clicked");
       };
       button_holder.append(reply_button);
 
@@ -213,8 +210,8 @@ document.addEventListener("DOMContentLoaded", function () {
           body: JSON.stringify({
             archived: false,
           }),
-        }).then((value) => {
-          window.location.replace("/");
+        }).then(() => {
+          load_mailbox(inbox);
         });
       } else {
         fetch("/emails/" + id, {
@@ -222,8 +219,8 @@ document.addEventListener("DOMContentLoaded", function () {
           body: JSON.stringify({
             archived: true,
           }),
-        }).then((value) => {
-          window.location.replace("/");
+        }).then(() => {
+          load_mailbox(inbox);
         });
       }
     }
@@ -254,7 +251,6 @@ document.addEventListener("DOMContentLoaded", function () {
         email.sender +
         " wrote:\n" +
         email.body;
-      console.log(subject, body, recipients);
       compose_email(subject, body, recipients);
     }
   }
