@@ -34,8 +34,8 @@ compose page
 <img src="images/mail3.png">
 Login page
 <br>
-<img src="images/mail4.png" width="30%">
+<img src="images/mail4.png" width="50%">
 <br>
 register page
 <br>
-<img src="images/mail5.png" width="30%">
+<img src="images/mail5.png" width="50%">
