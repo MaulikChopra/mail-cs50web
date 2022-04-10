@@ -19,7 +19,9 @@ document.addEventListener("DOMContentLoaded", function () {
     .querySelector("#archived")
     .addEventListener("click", () => load_mailbox(archive));
 
-  document.querySelector("#compose").addEventListener("click", compose_email);
+  document
+    .querySelector("#compose")
+    .addEventListener("click", load_compose_email);
 
   document
     .querySelector("#home")
@@ -33,7 +35,13 @@ document.addEventListener("DOMContentLoaded", function () {
   // By default, load the inbox
   load_mailbox(inbox);
 
-  function compose_email(subject_val = "", body_val = "", recipients_val = "") {
+  function load_compose_email(
+    subject_val = "",
+    body_val = "",
+    recipients_val = ""
+  ) {
+    // VIEW function to load compose email, works on click of compose button
+
     // Show compose view and hide other views
     document.querySelector("#emails-view").style.display = "none";
     document.querySelector("#compose-view").style.display = "block";
@@ -71,6 +79,8 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function load_mailbox(mailbox, email_success = false) {
+    // VIEW function to load the mailbox with emails, can be: inbox, sent, archive, etc.
+
     // Show the mailbox and hide other views
     document.querySelector("#emails-view").style.display = "block";
     document.querySelector("#compose-view").style.display = "none";
@@ -133,6 +143,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function load_email(id, mailbox) {
+    // VIEW function to load the email body
     document.querySelector("#emails-view").style.display = "none";
     document.querySelector("#compose-view").style.display = "none";
     document.querySelector("#particular-email-view").style.display = "block";
@@ -205,8 +216,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // function to archive or unarchive the mail
   function PUT_archive(id, archived) {
+    // HELPER function to archive or unarchive the mail
+    // works on archive button clicked
     if (archived) {
       fetch("/emails/" + id, {
         method: "PUT",
@@ -228,8 +240,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // function to reply to the mail
   function reply_email(email) {
+    // HELPER function to reply to the mail
+    // works on reply button clicked
     let recipients = email.sender;
     let subject;
     if (
@@ -254,6 +267,6 @@ document.addEventListener("DOMContentLoaded", function () {
       email.sender +
       " wrote:\n" +
       email.body;
-    compose_email(subject, body, recipients);
+    load_compose_email(subject, body, recipients);
   }
 });
