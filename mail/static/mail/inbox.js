@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
     .querySelector("#home")
     .addEventListener("click", () => load_mailbox(inbox));
 
+  // multiple emails bug solved by putting event listener outside of function.
   document
     .querySelector("#compose-submit")
     .addEventListener("click", send_email);
@@ -41,8 +42,6 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector("#compose-recipients").value = recipients_val;
     document.querySelector("#compose-subject").value = subject_val;
     document.querySelector("#compose-body").value = body_val;
-
-    // solve bug over here then record videos for submission
   }
   function send_email() {
     let email_body = JSON.stringify({
@@ -255,11 +254,6 @@ document.addEventListener("DOMContentLoaded", function () {
       email.sender +
       " wrote:\n" +
       email.body;
-    // adding fix of a bug sending emails twice
-    let counter = 0;
-    if (counter !== 1) {
-      compose_email(subject, body, recipients);
-      counter++;
-    }
+    compose_email(subject, body, recipients);
   }
 });
