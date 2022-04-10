@@ -18,11 +18,16 @@ document.addEventListener("DOMContentLoaded", function () {
   document
     .querySelector("#archived")
     .addEventListener("click", () => load_mailbox(archive));
+
   document.querySelector("#compose").addEventListener("click", compose_email);
 
   document
     .querySelector("#home")
     .addEventListener("click", () => load_mailbox(inbox));
+
+  document
+    .querySelector("#compose-submit")
+    .addEventListener("click", send_email);
 
   // By default, load the inbox
   load_mailbox(inbox);
@@ -37,36 +42,33 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector("#compose-subject").value = subject_val;
     document.querySelector("#compose-body").value = body_val;
 
-    document
-      .querySelector("#compose-submit")
-      .addEventListener("click", send_email);
-
-    function send_email() {
-      let email_body = JSON.stringify({
-        recipients: document.querySelector("#compose-recipients").value,
-        subject: document.querySelector("#compose-subject").value,
-        body: document.querySelector("#compose-body").value,
-      });
-      // post request to send the mail
-      fetch("/emails", {
-        method: "POST",
-        body: email_body,
-      }).then(function (response) {
-        if (response.status === 201) {
-          // redirect to main page and show success message for 5 second.
-          load_mailbox(inbox, true);
-        } else {
-          response.json().then(function (result) {
-            // add html for error and do not clear fields
-            document.querySelector("#message-box").innerHTML = `
+    // solve bug over here then record videos for submission
+  }
+  function send_email() {
+    let email_body = JSON.stringify({
+      recipients: document.querySelector("#compose-recipients").value,
+      subject: document.querySelector("#compose-subject").value,
+      body: document.querySelector("#compose-body").value,
+    });
+    // post request to send the mail
+    fetch("/emails", {
+      method: "POST",
+      body: email_body,
+    }).then(function (response) {
+      if (response.status === 201) {
+        // redirect to main page and show success message for 5 second.
+        load_mailbox(inbox, true);
+      } else {
+        response.json().then(function (result) {
+          // add html for error and do not clear fields
+          document.querySelector("#message-box").innerHTML = `
           <div class="alert alert-danger" role="alert">
             ${result["error"]}
           </div>
           `;
-          });
-        }
-      });
-    }
+        });
+      }
+    });
   }
 
   function load_mailbox(mailbox, email_success = false) {
@@ -202,56 +204,62 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       }
     }
-    // function to archive or unarchive the mail
-    function PUT_archive(id, archived) {
-      if (archived) {
-        fetch("/emails/" + id, {
-          method: "PUT",
-          body: JSON.stringify({
-            archived: false,
-          }),
-        }).then(() => {
-          load_mailbox(inbox);
-        });
-      } else {
-        fetch("/emails/" + id, {
-          method: "PUT",
-          body: JSON.stringify({
-            archived: true,
-          }),
-        }).then(() => {
-          load_mailbox(inbox);
-        });
-      }
+  }
+
+  // function to archive or unarchive the mail
+  function PUT_archive(id, archived) {
+    if (archived) {
+      fetch("/emails/" + id, {
+        method: "PUT",
+        body: JSON.stringify({
+          archived: false,
+        }),
+      }).then(() => {
+        load_mailbox(inbox);
+      });
+    } else {
+      fetch("/emails/" + id, {
+        method: "PUT",
+        body: JSON.stringify({
+          archived: true,
+        }),
+      }).then(() => {
+        load_mailbox(inbox);
+      });
+    }
+  }
+
+  // function to reply to the mail
+  function reply_email(email) {
+    let recipients = email.sender;
+    let subject;
+    if (
+      email.subject.substring(0, 4) === "Re: " ||
+      email.subject.substring(0, 4) === "re: "
+    ) {
+      subject = email.subject;
+    } else {
+      subject = "Re: " + email.subject;
     }
 
-    // function to reply to the mail
-    function reply_email(email) {
-      let recipients = email.sender;
-      let subject;
-      if (
-        email.subject.substring(0, 4) === "Re: " ||
-        email.subject.substring(0, 4) === "re: "
-      ) {
-        subject = email.subject;
-      } else {
-        subject = "Re: " + email.subject;
-      }
-
-      // to show time in the respecitve timezone using JS Date module.
-      let datetime = convert_from_django_to_JS_datetime(email.timestamp);
-      let time_in_ampm = formatAMPM(datetime);
-      let body =
-        "\n" +
-        "On " +
-        datetime.toDateString() +
-        ", " +
-        time_in_ampm +
-        ", " +
-        email.sender +
-        " wrote:\n" +
-        email.body;
+    // to show time in the respecitve timezone using JS Date module.
+    let datetime = convert_from_django_to_JS_datetime(email.timestamp);
+    let time_in_ampm = formatAMPM(datetime);
+    let body =
+      "\n" +
+      "On " +
+      datetime.toDateString() +
+      ", " +
+      time_in_ampm +
+      ", " +
+      email.sender +
+      " wrote:\n" +
+      email.body;
+    // adding fix of a bug sending emails twice
+    let counter = 0;
+    if (counter !== 1) {
       compose_email(subject, body, recipients);
+      counter++;
     }
   }
 });
