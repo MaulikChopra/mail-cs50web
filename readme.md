@@ -2,7 +2,7 @@
 
 ## CS50web Project
 
-## <a href="foo">Submission video</a>
+## <a href="https://youtu.be/M5tJ41DYPE0">Submission video</a>
 
 ### <b>Features:</b>
 
