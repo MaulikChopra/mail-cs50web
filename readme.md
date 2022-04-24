@@ -2,6 +2,8 @@
 
 ## <a href="https://mail-cs50web.herokuapp.com/">Project is live!</a>
 
+https://mail-cs50web.herokuapp.com/
+
 ## <a href="https://youtu.be/M5tJ41DYPE0">Submission video</a>
 
 ### cs50web Project
