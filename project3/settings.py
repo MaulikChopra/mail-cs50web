@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
+import dj_database_url
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -84,6 +85,9 @@ DATABASES = {
     }
 }
 
+db_from_env = dj_database_url.config(conn_max_age=600)
+DATABASES['default'].update(db_from_env)
+
 AUTH_USER_MODEL = 'mail.User'
 
 # Password validation
@@ -128,5 +132,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
+    'https://mail-cs50web.herokuapp.com',
     'http://localhost:8000',
 )

@@ -8,6 +8,7 @@ django = "4.0.4"
 django-cors-headers = "*"
 django-heroku = "*"
 gunicorn = "*"
+dj-database-url = "*"
 
 [dev-packages]
 
