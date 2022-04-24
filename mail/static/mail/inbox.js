@@ -69,10 +69,10 @@ document.addEventListener("DOMContentLoaded", function () {
         response.json().then(function (result) {
           // add html for error and do not clear fields
           document.querySelector("#message-box").innerHTML = `
-          <div class="alert alert-danger" role="alert">
-            ${result["error"]}
-          </div>
-          `;
+            <div class="alert alert-danger" role="alert">
+              ${result["error"]}
+            </div>
+            `;
         });
       }
     });
@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (email_success) {
       let success_message = document.createElement("div");
       success_message.innerHTML = ` <div class="alert alert-success" role="alert">
-      Email sent successfully!</div>`;
+        Email sent successfully!</div>`;
       document.querySelector("#emails-view").append(success_message);
       setTimeout(() => {
         success_message.style.display = "none";
@@ -120,18 +120,18 @@ document.addEventListener("DOMContentLoaded", function () {
             mail_element.setAttribute("style", "font-weight: 700; !important");
           }
           mail_element.innerHTML = `
-            <div style="margin-right: 1.5rem">
-            <i class="fa-solid fa-user"></i>
-              ${email.sender} 
-            </div>
-            <div style="padding-right: 0.5rem">
-            <i class="fa-solid fa-angles-right" ></i>
-              ${email.subject} 
-            </div>
-            <div style="font-size:0.75rem; color: grey; margin-left:auto">
-            <i class="fa-solid fa-clock"></i>
-              ${datetime.toDateString()}, ${formatAMPM(datetime)}
-          </div>`; // html code ended
+              <div style="margin-right: 1.5rem">
+              <i class="fa-solid fa-user"></i>
+                ${email.sender} 
+              </div>
+              <div style="padding-right: 0.5rem">
+              <i class="fa-solid fa-angles-right" ></i>
+                ${email.subject} 
+              </div>
+              <div style="font-size:0.75rem; color: grey; margin-left:auto">
+              <i class="fa-solid fa-clock"></i>
+                ${datetime.toDateString()}, ${formatAMPM(datetime)}
+            </div>`; // html code ended
 
           mail_element.addEventListener("click", function () {
             load_email(email.id, mailbox);
@@ -160,20 +160,20 @@ document.addEventListener("DOMContentLoaded", function () {
       // selecting the main div to push html into
       let elem = document.querySelector("#particular-email-view");
       elem.innerHTML = `
-      <h6><b style="font-weight: 700";>
-      From: </b>${email.sender}</h6>
-      <h6><b style="font-weight: 700";>
-      To: </b>${email.recipients}</h6>
-      <h5><b style="font-weight: 700";>
-      Subject</b><i class="fa-solid fa-angles-right"></i> 
-      ${email.subject}</h5>
-      <h6><em style="color:grey"><i class="fa-solid fa-clock"></i>
-      ${datetime.toDateString()}, ${formatAMPM(datetime)}
-      </em></h6>
-      <hr>
-      <p>${email.body.replace(/\n/g, "<br />")}</p>
-      <hr>
-      `; //html content end
+        <h6><b style="font-weight: 700";>
+        From: </b>${email.sender}</h6>
+        <h6><b style="font-weight: 700";>
+        To: </b>${email.recipients}</h6>
+        <h5><b style="font-weight: 700";>
+        Subject</b><i class="fa-solid fa-angles-right"></i> 
+        ${email.subject}</h5>
+        <h6><em style="color:grey"><i class="fa-solid fa-clock"></i>
+        ${datetime.toDateString()}, ${formatAMPM(datetime)}
+        </em></h6>
+        <hr>
+        <p>${email.body.replace(/\n/g, "<br />")}</p>
+        <hr>
+        `; //html content end
 
       // button holder to add all the buttons
       const button_holder = document.createElement("div");

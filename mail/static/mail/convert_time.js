@@ -1,8 +1,8 @@
 export function convert_from_django_to_JS_datetime(string) {
   `Takes Django string and converts to JS Date object in local time.
-    eg= INPUT: Apr 09 2022, 02:01 PM
-    OUTPUT: Sat Apr 09 2022 20:44:00 GMT+0530 (India Standard Time)
-    `;
+      eg= INPUT: Apr 09 2022, 02:01 PM
+      OUTPUT: Sat Apr 09 2022 20:44:00 GMT+0530 (India Standard Time)
+      `;
   let final = "";
   // prettier-ignore
   let month_list = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
