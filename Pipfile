@@ -10,8 +10,8 @@ django-heroku = "*"
 gunicorn = "*"
 dj-database-url = "*"
 whitenoise = "*"
-psycopg2-binary = "*"
 python-dotenv = "*"
+psycopg2 = "*"
 
 [dev-packages]
 
