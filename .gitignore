@@ -3,3 +3,4 @@ db.sqlite3
 staticfiles/
 mysite.log
 .env
+test.py

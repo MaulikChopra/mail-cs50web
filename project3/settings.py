@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import dj_database_url
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -25,7 +27,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+if os.environ.get('DEBUG') is None:  # on heroku server debug is none
+    DEBUG = False
+else:  # on local its true in .env
+    DEBUG = os.environ.get('DEBUG')
 
 ALLOWED_HOSTS = ['mail-cs50web.herokuapp.com',
                  '127.0.0.1']
