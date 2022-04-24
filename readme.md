@@ -1,8 +1,10 @@
 # MAIL
 
-## CS50web Project
+## <a href="https://mail-cs50web.herokuapp.com/">Project is live!</a>
 
 ## <a href="https://youtu.be/M5tJ41DYPE0">Submission video</a>
+
+### cs50web Project
 
 ### <b>Features:</b>
 
